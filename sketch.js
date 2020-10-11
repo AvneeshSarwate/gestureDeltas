@@ -5,6 +5,14 @@ let selectedSlot = "none";
 let fontSize = 24;
 let keysDown = new Set();
 
+let gestureShareWorker = new SharedWorker(document.location.origin+"/gestureDeltas/gesture_share_worker.js");
+
+gestureShareWorker.port.onmessage = (e) => {
+    console.log("gesture points", e.data);
+}
+
+gestureShareWorker.port.start();
+
 /*
 todo: 
 - create a simple algorithmic scheme that coordinates the different gesture objects to run on the same deltaLists at various times
@@ -67,6 +75,10 @@ class Gesture {
   }
 }
 
+function gesturePositions() {
+  return gestures.filter(g => g).map(g => ({x: g.pos.x/width, y: g.pos.y/height}));
+}
+
 function setup() {
   drawPos = createVector(0, 0);
   createCanvas(800, 800);
@@ -122,6 +134,7 @@ function draw() {
   gestures.forEach(g => {
     if(g) g.step(activeTransform);
   });
+  gestureShareWorker.port.postMessage([gesturePositions()]);
 }
 
 function mousePressed() {
