@@ -7,9 +7,9 @@ let keysDown = new Set();
 
 let gestureShareWorker = new SharedWorker(document.location.origin+"/gestureDeltas/gesture_share_worker.js");
 
-gestureShareWorker.port.onmessage = (e) => {
-    console.log("gesture points", e.data);
-}
+// gestureShareWorker.port.onmessage = (e) => {
+//     console.log("gesture points", e.data);
+// }
 
 gestureShareWorker.port.start();
 
